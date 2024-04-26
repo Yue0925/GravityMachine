@@ -7,7 +7,7 @@ const verbose = true
 const graphic = true
 
 println("-) Active les packages requis\n")
-using JuMP, GLPK, PyPlot, Printf, Random
+using JuMP, CPLEX, PyPlot, Printf, Random
 verbose ? println("  Fait \n") : nothing
 
 generateurVisualise = -1
@@ -17,7 +17,7 @@ generateurVisualise = -1
 include("GMdatastructures.jl") # types, datastructures and global variables specially defined for GM
 include("GMparsers.jl")        # parsers of instances and non-dominated points
 include("GMgenerators.jl")     # compute the generators giving the L bound set
-include("GMjumpModels.jl")     # JuMP models for computing relaxed optima of the SPA
+include("GMjumpModels.jl")     # JuMP models for computing relaxed optima of the SPA # todo : replace JuMP model 
 include("GMrounding.jl")       # Startegies for rounding a LP-solution to a 01-solution
 include("GMprojection.jl")     # JuMP models for computing the projection on the polytope of the SPA
 include("GMmopPrimitives.jl")  # usuals algorithms in multiobjective optimization
@@ -604,6 +604,6 @@ end
 #@time GM("sppaa02.txt", 6, 20, 20)
 #@time GM("sppnw03.txt", 6, 20, 20) #pb glpk
 #@time GM("sppnw10.txt", 6, 20, 20)
-@time GM("didactic5.txt", 5, 5, 10)
-#@time GM("sppnw29.txt", 6, 30, 20)
+# @time GM("didactic5.txt", 5, 5, 10)
+@time GM("sppnw29.txt", 6, 30, 20)
 nothing

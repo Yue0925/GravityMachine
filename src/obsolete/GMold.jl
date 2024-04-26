@@ -11,7 +11,7 @@ using JuMP, GLPK, PyPlot, Printf, Random
 verbose ? println("  Fait \n") : nothing
 
 include("GMparsers.jl")        # parsers of instances and non-dominated points
-include("GMjumpModels.jl")     # JuMP models for computing optima
+include("GMjumpModels.jl")     # JuMP models for computing optima # todo : replace JuMP model 
 include("GMmopPrimitives.jl")  # usuals algorithms in multiobjective optimization
 
 
@@ -952,7 +952,7 @@ function GM( fname::String,
     @printf("0) instance et parametres \n\n")
     verbose ? println("  instance = $fname | tailleSampling = $tailleSampling | maxTrial = $maxTrial | maxTime = $maxTime\n\n") : nothing
 
-    # chargement de l'instance numerique ---------------------------------------
+    #todo (parser): chargement de l'instance numerique ---------------------------------------
     c1, c2, A = loadInstance2SPA(fname) # instance numerique de SPA
     nbctr = size(A,1)
     nbvar = size(A,2)
@@ -963,7 +963,7 @@ function GM( fname::String,
     # --------------------------------------------------------------------------
     @printf("1) calcule les etendues de valeurs sur les 2 objectifs\n\n")
 
-    # calcule la valeur optimale relachee de f1 seule et le point (z1,z2) correspondant
+    #todo (model): calcule la valeur optimale relachee de f1 seule et le point (z1,z2) correspondant
     f1RL, xf1RL = computeLinearRelax2SPA(nbvar, nbctr, A, c1, c2, typemax(Int), 1) # opt fct 1
     minf1RL, maxf2RL = evaluerSolution(xf1RL, c1, c2)
 
@@ -1013,16 +1013,6 @@ function GM( fname::String,
     end
     verbose ? println("") : nothing
 
-    # --------------------------------------------------------------------------
-    # --------------------------------------------------------------------------
-    # Sortie graphique
-
-    figure("Gravity Machine",figsize=(6.5,5))
-    #xlim(25000,45000)
-    #ylim(20000,40000)
-    xlabel(L"z^1(x)")
-    ylabel(L"z^2(x)")
-    PyPlot.title("Cone | 1 rounding | 2-$fname")
 
     # --------------------------------------------------------------------------
     # --------------------------------------------------------------------------
@@ -1038,7 +1028,7 @@ function GM( fname::String,
         trial = 0
         H =(Vector{Int64})[]
 
-#perturbSolution30!(vg,k,c1,c2)
+        #perturbSolution30!(vg,k,c1,c2)
 
         # rounding solution : met a jour sInt dans vg --------------------------
         #roundingSolution!(vg,k,c1,c2)  # un cone
@@ -1114,52 +1104,67 @@ function GM( fname::String,
     # ==========================================================================
     @printf("6) Edition des resultats \n\n")
 
-#    figure("Gravity Machine",figsize=(6.5,5))
-    #xlim(25000,45000)
-    #ylim(20000,40000)
-#    xlabel(L"z^1(x)")
-#    ylabel(L"z^2(x)")
-    # Donne les points relaches initiaux ---------------------------------------
-#    scatter(xLf1,yLf1,color="blue", marker="x")
-#    scatter(xLf2,yLf2,color="red", marker="+")
-    graphic ? scatter(xL,yL,color="blue", marker="x", label = L"y \in L") : nothing
-
-    # Donne les points entiers -------------------------------------------------
-    graphic ? scatter(XInt,YInt,color="orange", marker="s", label = L"y"*" rounded") : nothing
-#    @show XInt
-#    @show YInt
-
-    # Donne les points apres projection Δ(x,x̃) ---------------------------------
-    graphic ? scatter(XProj,YProj, color="red", marker="x", label = L"y"*" projected") : nothing
-#    @show XProj
-#    @show YProj
-
-    # Donne les points admissibles ---------------------------------------------
-    graphic ? scatter(XFeas,YFeas, color="green", marker="o", label = L"y \in F") : nothing
-#    @show XFeas
-#    @show YFeas
-
     # Donne l'ensemble bornant primal obtenu + la frontiere correspondante -----
     X_EBP_frontiere, Y_EBP_frontiere, X_EBP, Y_EBP = ExtractEBP(XFeas, YFeas)
-    plot(X_EBP_frontiere, Y_EBP_frontiere, color="green", markersize=3.0, marker="x")
-    scatter(X_EBP, Y_EBP, color="green", s = 150, alpha = 0.3, label = L"y \in U")  
     @show X_EBP
     @show Y_EBP 
 
-    # Donne les points qui ont fait l'objet d'une perturbation -----------------
-     scatter(XPert,YPert, color="magenta", marker="s", label ="pertub")
-
     # Donne les points non-domines exacts de cette instance --------------------
-     XN,YN = loadNDPoints2SPA(fname)
-     plot(XN, YN, color="black", linewidth=0.75, marker="+", markersize=1.0, linestyle=":", label = L"y \in Y_N")
-     scatter(XN, YN, color="black", marker="+")
-#    @show X_Y_N
-#    @show Y_Y_N
+    XN,YN = loadNDPoints2SPA(fname)
 
-    # Affiche le cadre avec les legendes des differents traces -----------------
-    legend(bbox_to_anchor=[1,1], loc=0, borderaxespad=0, fontsize = "x-small")
-    #PyPlot.title("Cone | 1 rounding | 2-$fname")
+    # --------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
+    # Sortie graphique
+    if graphic
 
+        figure("Gravity Machine",figsize=(6.5,5))
+        #xlim(25000,45000)
+        #ylim(20000,40000)
+        xlabel(L"z^1(x)")
+        ylabel(L"z^2(x)")
+        PyPlot.title("Cone | 1 rounding | 2-$fname")
+
+    #    figure("Gravity Machine",figsize=(6.5,5))
+        #xlim(25000,45000)
+        #ylim(20000,40000)
+    #    xlabel(L"z^1(x)")
+    #    ylabel(L"z^2(x)")
+        # Donne les points relaches initiaux ---------------------------------------
+    #    scatter(xLf1,yLf1,color="blue", marker="x")
+    #    scatter(xLf2,yLf2,color="red", marker="+")
+        graphic ? scatter(xL,yL,color="blue", marker="x", label = L"y \in L") : nothing
+
+        # Donne les points entiers -------------------------------------------------
+        graphic ? scatter(XInt,YInt,color="orange", marker="s", label = L"y"*" rounded") : nothing
+    #    @show XInt
+    #    @show YInt
+
+        # Donne les points apres projection Δ(x,x̃) ---------------------------------
+        graphic ? scatter(XProj,YProj, color="red", marker="x", label = L"y"*" projected") : nothing
+    #    @show XProj
+    #    @show YProj
+
+        # Donne les points admissibles ---------------------------------------------
+        graphic ? scatter(XFeas,YFeas, color="green", marker="o", label = L"y \in F") : nothing
+    #    @show XFeas
+#    @show YFeas
+
+        # Donne l'ensemble bornant primal obtenu + la frontiere correspondante -----
+        plot(X_EBP_frontiere, Y_EBP_frontiere, color="green", markersize=3.0, marker="x")
+        scatter(X_EBP, Y_EBP, color="green", s = 150, alpha = 0.3, label = L"y \in U")  
+
+        # Donne les points qui ont fait l'objet d'une perturbation -----------------
+        scatter(XPert,YPert, color="magenta", marker="s", label ="pertub")
+
+        # Donne les points non-domines exacts de cette instance --------------------
+        plot(XN, YN, color="black", linewidth=0.75, marker="+", markersize=1.0, linestyle=":", label = L"y \in Y_N")
+        scatter(XN, YN, color="black", marker="+")
+    #    @show X_Y_N
+    #    @show Y_Y_N
+
+        # Affiche le cadre avec les legendes des differents traces -----------------
+        legend(bbox_to_anchor=[1,1], loc=0, borderaxespad=0, fontsize = "x-small")
+    end
 end
 
 # ==============================================================================

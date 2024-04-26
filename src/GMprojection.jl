@@ -8,7 +8,7 @@ function Δ2SPA(A::Array{Int,2}, xTilde::Array{Int,1})
     nbvar = size(A,2)
     idxTilde0, idxTilde1 = split01(xTilde)
 
-    proj = Model(GLPK.Optimizer)
+    proj = Model(CPLEX.Optimizer)
     @variable(proj, 0.0 <= x[1:length(xTilde)] <= 1.0 )
     @objective(proj, Min, sum(x[i] for i in idxTilde0) + sum((1-x[i]) for i in idxTilde1) )
     @constraint(proj, [i=1:nbctr],(sum((x[j]*A[i,j]) for j in 1:nbvar)) == 1)
@@ -28,7 +28,7 @@ function Δ2SPAbis(A::Array{Int,2}, xTilde::Array{Int,1},
     idxTilde0, idxTilde1 = split01(xTilde)
 
     cλ = λ1[k].*c1 + λ2[k].*c2
-    proj = Model(GLPK.Optimizer)
+    proj = Model(CPLEX.Optimizer)
     @variable(proj, 0.0 <= x[1:length(xTilde)] <= 1.0 )
 #    @objective(proj, Min, sum(λ1[k]*x[i] for i in idxTilde0) + sum(λ2[k]*(1-x[i]) for i in idxTilde1) )
     @objective(proj, Min, sum(cλ[i]*x[i] for i in idxTilde0) + sum(cλ[i]*(1-x[i]) for i in idxTilde1) )

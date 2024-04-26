@@ -9,7 +9,7 @@ function computeLinearRelax2SPA(  nbvar::Int,
                                   epsilon,
                                   obj::Int
 )
-  model = Model(GLPK.Optimizer)
+  model = Model(CPLEX.Optimizer)
   @variable(model, 0.0 <= x[1:nbvar] <= 1.0 )
   @constraint(model, [i=1:nbctr],(sum((x[j]*A[i,j]) for j in 1:nbvar)) == 1)
   if obj == 1
