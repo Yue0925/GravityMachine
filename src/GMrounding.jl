@@ -211,14 +211,14 @@ end
 # ==============================================================================
 # arrondi la solution correspondant au generateur (pas d'historique donc)
 # version avec voisinage et selection d'un voisin selon distance L1 avec generateur
-function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c1::Array{Int,1}, c2::Array{Int,1}, d::tListDisplay)
+function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c::Matrix{Float64}, d::tListDisplay)
 
     nbvar = length(vg[k].sInt.x)
     nbgen = size(vg,1)
     lstIdxFrac =(Int64)[]
 
-    vg[k].sInt.y[1] = 0
-    vg[k].sInt.y[2] = 0
+    vg[k].sInt.y[1] = c[1, 1]
+    vg[k].sInt.y[2] = c[2, 1]
 
     # --------------------------------------------------------------------------
     # identifie les variables fractionnaires et marquage par valeur sentinelle -1
@@ -227,8 +227,8 @@ function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c1::Array{Int
             vg[k].sInt.x[i] = 0
         elseif isapprox(vg[k].sPrj.x[i] , 1.0, atol=1e-3)
             vg[k].sInt.x[i] = 1
-            vg[k].sInt.y[1] += c1[i] # Comptabilise la contribution des var a 1
-            vg[k].sInt.y[2] += c2[i]
+            vg[k].sInt.y[1] += c[1, 1+i] # Comptabilise la contribution des var a 1
+            vg[k].sInt.y[2] += c[2, 1+i]
         else
             vg[k].sInt.x[i] = -1
             push!(lstIdxFrac,i)
@@ -281,7 +281,7 @@ function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c1::Array{Int
 
             # Evalue x[iFrac]=0
             # defalque la contribution fractionnaire de la variable aux objectifs => pose x[iFrac]=0
-            pM = tPoint( z1 - c1[iFrac] * vg[k].sPrj.x[iFrac] , z2 - c2[iFrac] * vg[k].sPrj.x[iFrac])
+            pM = tPoint( z1 - c[1, 1+iFrac] * vg[k].sPrj.x[iFrac] , z2 - c[2, 1+iFrac] * vg[k].sPrj.x[iFrac])
             if inCone1VersZ(pCour, pSuiv, pPrec, pM)
                 distL1 = abs(vg[k].sRel.y[1]-pM.x) + abs(vg[k].sRel.y[2]-pM.y)
                 if distL1 < distMin
@@ -291,7 +291,7 @@ function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c1::Array{Int
 
             # Evalue x[iFrac]=1
             # ajoute la contribution entiere de la variable aux objectifs => pose x[iFrac]=1
-            pM = tPoint( z1 - c1[iFrac] * vg[k].sPrj.x[iFrac] + c1[iFrac], z2 - c2[iFrac] * vg[k].sPrj.x[iFrac] + c2[iFrac])
+            pM = tPoint( z1 - c[1, 1+iFrac] * vg[k].sPrj.x[iFrac] + c[1, 1+iFrac], z2 - c[2, 1+iFrac] * vg[k].sPrj.x[iFrac] + c[2, 1+iFrac])
             distL1 = abs(vg[k].sRel.y[1]-pM.x) + abs(vg[k].sRel.y[2]-pM.y)
             if distL1 < distMin
                 distMin = distL1; ind = iFrac; val = 1

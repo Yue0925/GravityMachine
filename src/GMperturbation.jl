@@ -54,7 +54,7 @@ end
 # ==============================================================================
 # applique une perturbation sur la solution entiere faisant l'objet d'un cycle
 
-function perturbSolution30!(vg::Vector{tGenerateur}, k::Int64, c1::Array{Int,1}, c2::Array{Int,1}, d::tListDisplay)
+function perturbSolution30!(vg::Vector{tGenerateur}, k::Int64, cc::Matrix{Float64}, d::tListDisplay)
 
     # liste des candidats (valeur, indice) et tri decroissant
     nbvar = length(vg[k].sInt.x)
@@ -78,14 +78,14 @@ for i = 1:length(candidats)
     if etat == 0
         if vg[k].sInt.x[j] == 0
             vg[k].sInt.x[j] = 1
-            vg[k].sInt.y[1] = vg[k].sInt.y[1] + c1[j]
-            vg[k].sInt.y[2] = vg[k].sInt.y[2] + c2[j]
+            vg[k].sInt.y[1] = vg[k].sInt.y[1] + c[1, 1+j]
+            vg[k].sInt.y[2] = vg[k].sInt.y[2] + c[2, 1+j]
         end
     else
         if vg[k].sInt.x[j] == 1
             vg[k].sInt.x[j] = 0
-            vg[k].sInt.y[1] = vg[k].sInt.y[1] - c1[j]
-            vg[k].sInt.y[2] = vg[k].sInt.y[2] - c2[j]
+            vg[k].sInt.y[1] = vg[k].sInt.y[1] - c[1, 1+j]
+            vg[k].sInt.y[2] = vg[k].sInt.y[2] - c[2, 1+j]
         end
     end
     etat=(etat+1)%2

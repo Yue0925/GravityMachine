@@ -1,7 +1,7 @@
 # ==============================================================================
 # Calcul des generateurs avec 2 ϵ-contraintes alternees jusqu'a leur rencontre
 
-function calculGenerateurs(A::Array{Int,2}, c1::Array{Int,1}, c2::Array{Int,1}, 
+function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Float64}, 
                            tailleSampling::Int64, 
                            minf1RL::Float64, maxf2RL::Float64, maxf1RL::Float64, minf2RL::Float64,
                            d::tListDisplay)
@@ -32,14 +32,14 @@ function calculGenerateurs(A::Array{Int,2}, c1::Array{Int,1}, c2::Array{Int,1},
             verbose ? @printf("  z1 %2d : ϵ = %8.2f  ", j1, maxf2RL - (j1-1) * pasSample2) : nothing # echantillonage sur z2
 
             # calcul d'une solution epsilon-contrainte
-            f1RL, xf1RL = computeLinearRelax2SPA(nbvar, nbctr, A, c1, c2, maxf2RL - (j1-1) * pasSample2, 1)
+            f1RL, xf1RL = computeLinearRelax(nbvar, nbctr, A, b, c, maxf2RL - (j1-1) * pasSample2, 1)
 
             # reconditionne les valeurs 0 et 1 et arrondi les autres valeurs
             nettoyageSolution!(xf1RL)
-            verbose ? @printf("fRL = %8.2f  ",round(f1RL, digits=2)) : nothing
+            verbose ? @printf("fRL = %8.2f  ",f1RL) : nothing
 
             # recalcule la solution au regard des 2 objectifs
-            z1f1RLcourant, z2f1RLcourant = evaluerSolution(xf1RL, c1, c2)
+            z1f1RLcourant, z2f1RLcourant = evaluerSolution(xf1RL, c)
             verbose ? @printf("[ %8.2f , %8.2f ] \n", z1f1RLcourant, z2f1RLcourant) : nothing
 
             # maj la valeur limite sur l'objectif 2 pour la solution courante
@@ -57,14 +57,14 @@ function calculGenerateurs(A::Array{Int,2}, c1::Array{Int,1}, c2::Array{Int,1},
             verbose ? @printf("  z2 %2d : ϵ = %8.2f  ", j2, maxf1RL - (j2-1) * pasSample1) : nothing # echantillonage sur z1
 
             # calcul d'une solution epsilon-contrainte
-            f2RL, xf2RL = computeLinearRelax2SPA(nbvar, nbctr, A, c1, c2, maxf1RL - (j2-1) * pasSample1, 2)
+            f2RL, xf2RL = computeLinearRelax(nbvar, nbctr, A, b, c, maxf1RL - (j2-1) * pasSample1, 2)
 
             # reconditionne les valeurs 0 et 1 et arrondi les autres valeurs
             nettoyageSolution!(xf2RL)
-            verbose ? @printf("fRL = %8.2f  ",round(f2RL, digits=2)) : nothing
+            verbose ? @printf("fRL = %8.2f  ",f2RL) : nothing
 
             # recalcule la solution au regard des 2 objectifs
-            z1f2RLcourant, z2f2RLcourant = evaluerSolution(xf2RL, c1, c2)
+            z1f2RLcourant, z2f2RLcourant = evaluerSolution(xf2RL, c)
             verbose ? @printf("[ %8.2f , %8.2f ] \n", z1f2RLcourant, z2f2RLcourant) : nothing
 
             # maj la valeur limite sur l'objectif 2 pour la solution courante
