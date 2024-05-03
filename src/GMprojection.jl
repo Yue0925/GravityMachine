@@ -2,7 +2,7 @@
 # Projete xTilde sur le polyedre X du SPA avec norme-L1
 # version FP 2005
 
-function Δ2SPA(A::Array{Int,2}, xTilde::Array{Int,1})
+function Δ2SPA(A::Array{Float64,2}, xTilde::Array{Float64,1})
 
     nbctr = size(A,1)
     nbvar = size(A,2)
@@ -20,7 +20,7 @@ end
 # Projete xTilde sur le polyedre X du SPA avec norme-L1
 # version avec somme ponderee donnant la direction vers le generateur k
 
-function Δ2SPAbis(A::Matrix{Float64}, b::Vector{Float64}, c::Matrix{Float64}, xTilde::Array{Int,1}, 
+function Δ2SPAbis(A::Matrix{Float64}, b::Vector{Float64}, c::Matrix{Float64}, xTilde::Array{Float64,1}, 
                     k::Int64, λ1::Vector{Float64}, λ2::Vector{Float64})
 
     nbctr = size(A,1)

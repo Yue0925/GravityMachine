@@ -1,16 +1,16 @@
 # types ------------------------------------------------------------------------
 
 # type corresponding to a solution
-mutable struct tSolution{T}
-    x :: Vector{T}                # vector variables x (1..n)
+mutable struct tSolution
+    x :: Vector{Float64}                # vector variables x (1..n)
     y :: Vector{Float64}                # vector outcomes  y (1..p)
 end
 
 # type corresponding to a point generator
 mutable struct tGenerateur
-    sRel :: tSolution{Float64}    # initial relaxed solution
-    sInt :: tSolution{Int64}      # integer solution
-    sPrj :: tSolution{Float64}    # projected solution
+    sRel :: tSolution   # initial relaxed solution
+    sInt :: tSolution      # integer solution
+    sPrj :: tSolution    # projected solution
     sFea :: Bool                  # indicate if sInt is feasible or not
 end
 
@@ -26,10 +26,10 @@ mutable struct tListDisplay
     xLf1  :: Vector{Float64};  yLf1  :: Vector{Float64} # liste des points (x,y) relaches
     xLf2  :: Vector{Float64};  yLf2  :: Vector{Float64} # liste des points (x,y) relaches
     xL    :: Vector{Float64};  yL    :: Vector{Float64} # liste des points (x,y) relaches
-    XInt  :: Vector{Int64};    YInt  :: Vector{Float64}   # liste des points (x,y) entiers
+    XInt  :: Vector{Float64};    YInt  :: Vector{Float64}   # liste des points (x,y) entiers
     XProj :: Vector{Float64};  YProj :: Vector{Float64} # liste des points (x,y) projetes
-    XFeas :: Vector{Int64};    YFeas :: Vector{Float64}   # liste des points (x,y) admissibles
-    XPert :: Vector{Int64};    YPert :: Vector{Float64}   # liste des points (x,y) perturbes
+    XFeas :: Vector{Float64};    YFeas :: Vector{Float64}   # liste des points (x,y) admissibles
+    XPert :: Vector{Float64};    YPert :: Vector{Float64}   # liste des points (x,y) perturbes
 end
 
 
@@ -42,9 +42,9 @@ function allocateDatastructure(nbgen::Int64, nbvar::Int64, nbobj::Int64)
 
     vg = Vector{tGenerateur}(undef, nbgen)
     for k = 1:nbgen
-        vg[k] = tGenerateur( tSolution{Float64}(zeros(Float64,nbvar),zeros(Float64,nbobj)),
-                              tSolution{Int64}(zeros(Int64,nbvar),zeros(Float64,nbobj)),
-                              tSolution{Float64}(zeros(Float64,nbvar),zeros(Float64,nbobj)),
+        vg[k] = tGenerateur( tSolution(zeros(Float64,nbvar),zeros(Float64,nbobj)),
+                              tSolution(zeros(Float64,nbvar),zeros(Float64,nbobj)),
+                              tSolution(zeros(Float64,nbvar),zeros(Float64,nbobj)),
                               false
                             )
     end

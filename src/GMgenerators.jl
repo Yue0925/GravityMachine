@@ -9,8 +9,8 @@ function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Fl
     nbctr = size(A,1)
     nbvar = size(A,2)
 
-    L1 = (tSolution{Float64})[]
-    L2 = (tSolution{Float64})[]
+    L1 = (tSolution)[]
+    L2 = (tSolution)[]
 
     # Premiere generation de points (avec z1 la fonction a minimiser) ----------
     pasSample2 = (maxf2RL - minf2RL) / (tailleSampling-1) # pas de l'echantillonage sur z2
@@ -45,7 +45,7 @@ function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Fl
             # maj la valeur limite sur l'objectif 2 pour la solution courante
             maxf2RLlimite = z2f1RLcourant
             if maxf2RLlimite > minf2RLlimite
-                push!(L1, (tSolution{Float64})(xf1RL,[z1f1RLcourant, z2f1RLcourant]))
+                push!(L1, (tSolution)(xf1RL,[z1f1RLcourant, z2f1RLcourant]))
                 push!(d.xL,z1f1RLcourant);push!(d.yL,z2f1RLcourant)
                 push!(d.xLf1,z1f1RLcourant);push!(d.yLf1,z2f1RLcourant)
             end
@@ -70,7 +70,7 @@ function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Fl
             # maj la valeur limite sur l'objectif 2 pour la solution courante
             minf2RLlimite = z2f2RLcourant
             if maxf2RLlimite > minf2RLlimite
-                push!(L2, (tSolution{Float64})(xf2RL,[z1f2RLcourant, z2f2RLcourant]))
+                push!(L2, (tSolution)(xf2RL,[z1f2RLcourant, z2f2RLcourant]))
                 push!(d.xL,z1f2RLcourant);push!(d.yL,z2f2RLcourant)
                 push!(d.xLf2,z1f2RLcourant);push!(d.yLf2,z2f2RLcourant)
             end
