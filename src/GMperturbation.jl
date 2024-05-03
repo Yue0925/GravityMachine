@@ -54,7 +54,7 @@ end
 # ==============================================================================
 # applique une perturbation sur la solution entiere faisant l'objet d'un cycle
 
-function perturbSolution30!(vg::Vector{tGenerateur}, k::Int64, cc::Matrix{Float64}, d::tListDisplay)
+function perturbSolution30!(vg::Vector{tGenerateur}, k::Int64, c::Matrix{Float64}, d::tListDisplay)
 
     # liste des candidats (valeur, indice) et tri decroissant
     nbvar = length(vg[k].sInt.x)

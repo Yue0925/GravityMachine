@@ -39,10 +39,10 @@ function computeLinearRelax(  nbvar::Int,
 
   if obj == 1
     @objective(model, Min, c[1, 1] + c[1, 2:end]'*x  )
-    @constraint(model, c[2, 1] + c[2, 2:end]'*x  <= epsilon)
+    epsilon == -1 ? nothing : @constraint(model, c[2, 1] + c[2, 2:end]'*x  <= epsilon)
   else
     @objective(model, Min, c[2, 1] + c[2, 2:end]'*x )
-    @constraint(model, c[1, 1] + c[1, 2:end]'*x  <= epsilon)
+    epsilon == -1 ? nothing : @constraint(model, c[1, 1] + c[1, 2:end]'*x  <= epsilon)
   end
   optimize!(model)
   return objective_value(model), value.(x)

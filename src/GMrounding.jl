@@ -300,10 +300,10 @@ function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c::Matrix{Flo
 
         # applique le voisin le plus interessant trouve
         vg[k].sInt.x[ind] = val
-        vg[k].sInt.y[1] += vg[k].sInt.x[ind] * c1[ind] * val
-        vg[k].sInt.y[2] += vg[k].sInt.x[ind] * c2[ind] * val
-        z1 = z1 - (vg[k].sPrj.x[ind] * c1[ind]) + c1[ind] * val
-        z2 = z2 - (vg[k].sPrj.x[ind] * c2[ind]) + c2[ind] * val
+        vg[k].sInt.y[1] += vg[k].sInt.x[ind] * c[1, ind+1] * val
+        vg[k].sInt.y[2] += vg[k].sInt.x[ind] * c[2, ind+1] * val
+        z1 = z1 - (vg[k].sPrj.x[ind] * c[1, 1+ind]) + c[1, 1+ind] * val
+        z2 = z2 - (vg[k].sPrj.x[ind] * c[2, 1+ind]) + c[2, 1+ind] * val
     #    @printf("  x[%2d]=%2d |  : [ %12.5f , %12.5f ] \n",ind, val, z1, z2)
 
     end
