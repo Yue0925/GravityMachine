@@ -309,7 +309,7 @@ function roundingSolutionNew23!(vg::Vector{tGenerateur}, k::Int64, c::Matrix{Flo
     end
 
 #    if length(vg[k].sInt.x) ≤ 20 @show vg[k].sInt.x end
-    @printf("→ #round : %4d → [ %5d , %5d ] ", nbVarNonEntiere, vg[k].sInt.y[1], vg[k].sInt.y[2])
+    verbose ? @printf("→ #round : %4d → [ %5d , %5d ] ", nbVarNonEntiere, vg[k].sInt.y[1], vg[k].sInt.y[2]) : nothing
 
     # archive le point obtenu pour les besoins d'affichage
     if generateurVisualise == -1 

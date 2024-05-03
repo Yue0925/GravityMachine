@@ -81,7 +81,7 @@ function projectingSolution!(vg::Vector{tGenerateur}, k::Int64,
         vg[k].sInt.y[1] = vg[k].sPrj.y[1]
         vg[k].sInt.y[2] = vg[k].sPrj.y[2]
         vg[k].sFea = true
-        @printf("→ Admissible "); print("                       ")
+        verbose ? @printf("→ Admissible ") : nothing; verbose ? print("                       ") : nothing
 
         # archive le point obtenu pour les besoins d'affichage
         if generateurVisualise == -1 
@@ -97,7 +97,7 @@ function projectingSolution!(vg::Vector{tGenerateur}, k::Int64,
     else
 
         vg[k].sFea = false
-        @printf("→ x          "); print("                       ")
+        verbose ? @printf("→ x          ") : nothing; verbose ? print("                       ") : nothing
         # prepare pour l'iteration suivante
 #        vg[k].xRlx = deepcopy(vg[k].sPrj.x) !!!!!!!!!!!!!
 

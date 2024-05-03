@@ -91,7 +91,7 @@ for i = 1:length(candidats)
     etat=(etat+1)%2
 end
 
-    @printf("  %2dC : [ %8.2f , %8.2f ] \n", k, vg[k].sInt.y[1], vg[k].sInt.y[2])
+    verbose ? @printf("  %2dC : [ %8.2f , %8.2f ] \n", k, vg[k].sInt.y[1], vg[k].sInt.y[2]) : nothing
 
     # archive le point obtenu pour les besoins d'affichage    
     if generateurVisualise == -1 
