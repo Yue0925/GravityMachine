@@ -1,13 +1,12 @@
 # ==============================================================================
 # Calcul des generateurs avec 2 ϵ-contraintes alternees jusqu'a leur rencontre
 
-function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Float64}, 
+function calculGenerateurs( model::JuMP.Model,  x::Array{JuMP.VariableRef}, 
+                            c::Matrix{Float64}, 
                            tailleSampling::Int64, 
                            minf1RL::Float64, maxf2RL::Float64, maxf1RL::Float64, minf2RL::Float64,
                            d::tListDisplay)
 
-    nbctr = size(A,1)
-    nbvar = size(A,2)
 
     L1 = (tSolution)[]
     L2 = (tSolution)[]
@@ -32,7 +31,7 @@ function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Fl
             verbose ? @printf("  z1 %2d : ϵ = %8.2f  ", j1, maxf2RL - (j1-1) * pasSample2) : nothing # echantillonage sur z2
 
             # calcul d'une solution epsilon-contrainte
-            f1RL, xf1RL = computeLinearRelax(nbvar, nbctr, A, b, c, maxf2RL - (j1-1) * pasSample2, 1)
+            f1RL, xf1RL = computeLinearRelax(model, x, c, maxf2RL - (j1-1) * pasSample2, 1)
 
             # reconditionne les valeurs 0 et 1 et arrondi les autres valeurs
             nettoyageSolution!(xf1RL)
@@ -57,7 +56,7 @@ function calculGenerateurs(A::Matrix{Float64}, b::Vector{Float64},  c::Matrix{Fl
             verbose ? @printf("  z2 %2d : ϵ = %8.2f  ", j2, maxf1RL - (j2-1) * pasSample1) : nothing # echantillonage sur z1
 
             # calcul d'une solution epsilon-contrainte
-            f2RL, xf2RL = computeLinearRelax(nbvar, nbctr, A, b, c, maxf1RL - (j2-1) * pasSample1, 2)
+            f2RL, xf2RL = computeLinearRelax(model, x, c, maxf1RL - (j2-1) * pasSample1, 2)
 
             # reconditionne les valeurs 0 et 1 et arrondi les autres valeurs
             nettoyageSolution!(xf2RL)

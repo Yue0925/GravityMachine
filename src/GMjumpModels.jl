@@ -24,26 +24,35 @@ function computeLinearRelax2SPA(  nbvar::Int,
 end
 
 
-function computeLinearRelax(  nbvar::Int,
-  nbctr::Int,
-  A::Matrix{Float64},
-  b::Vector{Float64},
+function computeLinearRelax( model::JuMP.Model,  x::Array{JuMP.VariableRef}, 
   c::Matrix{Float64},
   epsilon,
   obj::Int
 )
-  model = Model(CPLEX.Optimizer) ; set_silent(model)
-  @variable(model, 0.0 <= x[1:nbvar] <= 1.0 )
 
-  @constraint(model, [i=1:nbctr], A[i, :]'*x <= b[i] )
-
+  cons = Vector{ConstraintRef}()
   if obj == 1
-    @objective(model, Min, c[1, 1] + c[1, 2:end]'*x  )
-    epsilon == -1 ? nothing : @constraint(model, c[2, 1] + c[2, 2:end]'*x  <= epsilon)
+    set_objective(model, MOI.MIN_SENSE, c[1, 1] + c[1, 2:end]'*x  )
+    if epsilon == -1 
+       nothing 
+    else
+      con = @constraint(model, c[2, 1] + c[2, 2:end]'*x  <= epsilon) ; push!(cons, con)
+    end
+
   else
-    @objective(model, Min, c[2, 1] + c[2, 2:end]'*x )
-    epsilon == -1 ? nothing : @constraint(model, c[1, 1] + c[1, 2:end]'*x  <= epsilon)
+    set_objective(model, MOI.MIN_SENSE, c[2, 1] + c[2, 2:end]'*x )
+    if epsilon == -1 
+      nothing 
+    else
+      con = @constraint(model, c[1, 1] + c[1, 2:end]'*x  <= epsilon) ; push!(cons, con)
+    end
   end
+
   optimize!(model)
-  return objective_value(model), value.(x)
+  v_obj, v_x = objective_value(model), value.(x)
+
+  for con in cons
+    JuMP.delete( model, con) ; JuMP.unregister( model, :con)
+  end
+  return v_obj, v_x
 end
