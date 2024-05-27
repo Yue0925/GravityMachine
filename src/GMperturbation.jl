@@ -69,7 +69,7 @@ function perturbSolution30!(vg::Vector{tGenerateur}, k::Int64, c::Matrix{Float64
 #@show vg[k].sInt.x
 #@show candidats
 #@show nbvar
-
+if length(candidats) == 0 return nothing end
 seq = randperm(length(candidats)) # melange les candidats afin d'avoir une composante variee
 etat = vg[k].sInt.x[ candidats[seq[1]][2] ] # etat 0 ou 1 de la premiere variable candidate
 for i = 1:length(candidats)
